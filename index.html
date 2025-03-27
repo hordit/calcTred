@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Progressione</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .container { 
+            max-width: 400px; 
+            margin: auto; 
+            padding: 20px; 
+            border: 10px solid #0dd7e9; 
+            border-radius: 20px; 
+            box-sizing: border-box; /* Garantisce che padding non influenzi la larghezza totale */
+        }
+        input, button { 
+            margin: 10px 0; 
+            padding: 8px; 
+            width: calc(100% - 20px); /* Considera padding senza toccare la cornice */
+            box-sizing: border-box; /* Include padding nel calcolo della larghezza */
+            border-radius: 10px;
+        }
+        .result-box { 
+            margin-top: 10px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #7a797e; 
+        }
+        .valFinal { 
+            margin-top: 10px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #2f72b1; 
+        }
+    
+        .profit { 
+            margin-top: 10px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #21d609; 
+        }
+    
+        .progress-list { 
+            justify-items: center;
+            margin-top: 20px; 
+            text-align: left;
+            font-size: 16px;
+            list-style-type: none;
+            padding-left: 0;
+        }
+    
+        .progress-list li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Calcolatore Progressione</h2>
+        <label for="start">Valore iniziale:</label>
+        <input type="number" id="start" value="550" step="0.1">
+        
+        <label for="ticks">Numero di tick:</label>
+        <input type="number" id="ticks" value="10" step="1">
+        
+        <button onclick="calculateProgression()">Calcola</button>
+        
+        <div class="result-box">Valore finale: <span class="valFinal" id="final-result"></span></div>
+        <div class="result-box">Guadagno effettivo: <span class="profit" id="profit"></span></div>
+        
+        <ul class="progress-list" id="progress-list"></ul> <!-- Lista dei valori progressivi -->
+    </div>
+
+    <script>
+        function calculateProgression() {
+            let start = parseFloat(document.getElementById('start').value);
+            let ticks = parseInt(document.getElementById('ticks').value);
+            let sum = start;
+            let progressList = document.getElementById('progress-list');
+            progressList.innerHTML = "";  // Pulisce la lista ad ogni calcolo
+
+            for (let i = 0; i < ticks; i++) {
+                let increment = Math.round((sum * 0.01) * 100) / 100 / 2; // Calcola 1%, arrotonda a due decimali e dividi per 2
+                sum += increment;
+
+                // Aggiungi un nuovo elemento alla lista con il valore progressivo e l'incremento
+                let li = document.createElement('li');
+                li.textContent = `Tick ${i + 1}: ${sum.toFixed(2)}     ---> Guadagno: ${increment.toFixed(2)}`;
+                progressList.appendChild(li);
+            }
+            
+            let profit = sum - start;
+            document.getElementById('final-result').innerText = sum.toFixed(2);  // Valore finale con 2 decimali
+            document.getElementById('profit').innerText = profit.toFixed(2);  // Guadagno con 2 decimali
+        }
+    </script>
+</body>
+</html>
+
+
+
