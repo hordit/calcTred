@@ -1,102 +1,234 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcolatore Progressione</title>
+    <title>Click Progression Calculator</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        .container { 
-            max-width: 400px; 
-            margin: auto; 
-            padding: 20px; 
-            border: 10px solid #0dd7e9; 
-            border-radius: 20px; 
-            box-sizing: border-box; /* Garantisce che padding non influenzi la larghezza totale */
-        }
-        input, button { 
-            margin: 10px 0; 
-            padding: 8px; 
-            width: calc(100% - 20px); /* Considera padding senza toccare la cornice */
-            box-sizing: border-box; /* Include padding nel calcolo della larghezza */
-            border-radius: 10px;
-        }
-        .result-box { 
-            margin-top: 10px; 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: #7a797e; 
-        }
-        .valFinal { 
-            margin-top: 10px; 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: #2f72b1; 
-        }
-    
-        .profit { 
-            margin-top: 10px; 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: #21d609; 
-        }
-    
-        .progress-list { 
-            justify-items: center;
-            margin-top: 20px; 
-            text-align: left;
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f7f6; }
+        .container { max-width: 800px; margin: auto; padding: 20px; border: 5px solid #0dd7e9; border-radius: 15px; box-sizing: border-box; background-color: white; }
+        input, button { margin: 10px 0; padding: 10px; width: 100%; max-width: 250px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
+        input:focus, button:focus { outline: none; border-color: #0dd7e9; }
+        
+        /* Styling for buttons */
+        button {
+            background-color: #0dd7e9;
+            color: white;
+            cursor: pointer;
             font-size: 16px;
-            list-style-type: none;
-            padding-left: 0;
+            transition: background-color 0.3s ease;
         }
-    
-        .progress-list li {
-            margin: 8px 0;
+        button:hover {
+            background-color: #008cba;
         }
+
+        /* Delete button style */
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .delete-btn:hover {
+            color: #b22a2a;
+        }
+
+        /* Container for lists and the result box */
+        .result-box { margin-top: 10px; font-size: 18px; font-weight: bold; color: #7a797e; }
+        .valFinal { color: #2f72b1; }
+        .profit { color: #21d609; }
+
+        /* Styling for list items */
+        .list-container { text-align: left; margin: auto; width: 100%; padding: 10px; box-sizing: border-box; }
+        .list-container li { margin-bottom: 10px; }
+
+        /* Table styling */
+        table { margin-top: 20px; width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; text-align: center; padding: 10px; }
+        th { background-color: #0dd7e9; color: white; }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Calcolatore Progressione</h2>
-        <label for="start">Valore iniziale:</label>
-        <input type="number" id="start" value="550" step="0.1">
-        
-        <label for="ticks">Numero di tick:</label>
-        <input type="number" id="ticks" value="10" step="1">
-        
-        <button onclick="calculateProgression()">Calcola</button>
-        
-        <div class="result-box">Valore finale: <span class="valFinal" id="final-result"></span></div>
-        <div class="result-box">Guadagno effettivo: <span class="profit" id="profit"></span></div>
-        
-        <ul class="progress-list" id="progress-list"></ul> <!-- Lista dei valori progressivi -->
+
+<div class="container">
+    <h2>Click Progression Calculator</h2>
+
+    <label for="start">Starting Value:</label>
+    <input type="number" id="start" value="550" step="0.1">
+
+    <h3>Define Click Sequences</h3>
+    <label>From Day:</label>
+    <input type="number" id="from1" placeholder="Start day">
+    <label>To Day:</label>
+    <input type="number" id="to1" placeholder="End day">
+    <label>Clicks per day:</label>
+    <input type="number" id="clicks1" placeholder="Clicks">
+    <button onclick="addSequence()">Add Sequence</button>
+
+    <h3>Sequences:</h3>
+    <ul id="sequence-list" class="list-container"></ul>
+
+    <h3>Define Withdrawals</h3>
+    <label>Day:</label>
+    <input type="number" id="withdraw-day" placeholder="Day">
+    <label>Amount:</label>
+    <input type="number" id="withdraw-amount" placeholder="Amount">
+    <button onclick="addWithdrawal()">Add Withdrawal</button>
+
+    <h3>Withdrawals:</h3>
+    <ul id="withdrawal-list" class="list-container"></ul>
+
+    <button onclick="calculateProgression()">Calculate</button>
+
+    <div class="result-box">
+        Final Value: <span class="valFinal" id="final-result"></span>
+    </div>
+    <div class="result-box">
+        Total Profit: <span class="profit" id="profit"></span>
     </div>
 
-    <script>
-        function calculateProgression() {
-            let start = parseFloat(document.getElementById('start').value);
-            let ticks = parseInt(document.getElementById('ticks').value);
-            let sum = start;
-            let progressList = document.getElementById('progress-list');
-            progressList.innerHTML = "";  // Pulisce la lista ad ogni calcolo
+    <table>
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Ticks</th>
+                <th>Value</th>
+                <th>Profit</th>
+            </tr>
+        </thead>
+        <tbody id="daily-results"></tbody>
+    </table>
+</div>
+
+<script>
+    let sequences = [];
+    let withdrawals = [];
+
+    function addSequence() {
+        let from = parseInt(document.getElementById("from1").value);
+        let to = parseInt(document.getElementById("to1").value);
+        let clicks = parseInt(document.getElementById("clicks1").value);
+
+        if (!from || !to || !clicks || from > to || from < 1) {
+            alert("Inserisci dati validi!");
+            return;
+        }
+
+        let sequenceId = sequences.length;
+        sequences.push({ id: sequenceId, from, to, clicks });
+
+        let sequenceList = document.getElementById("sequence-list");
+        let listItem = document.createElement("li");
+        listItem.innerHTML = `Days ${from} to ${to}: ${clicks} clicks 
+            <span class="delete-btn" onclick="removeSequence(${sequenceId})">❌</span>`;
+        sequenceList.appendChild(listItem);
+    }
+
+    function removeSequence(id) {
+        sequences = sequences.filter(sequence => sequence.id !== id);
+        updateSequences();
+    }
+
+    function updateSequences() {
+        let sequenceList = document.getElementById("sequence-list");
+        sequenceList.innerHTML = "";
+
+        sequences.forEach(seq => {
+            let listItem = document.createElement("li");
+            listItem.innerHTML = `Days ${seq.from} to ${seq.to}: ${seq.clicks} clicks 
+                <span class="delete-btn" onclick="removeSequence(${seq.id})">❌</span>`;
+            sequenceList.appendChild(listItem);
+        });
+
+        calculateProgression();
+    }
+
+    function addWithdrawal() {
+        let day = parseInt(document.getElementById("withdraw-day").value);
+        let amount = parseFloat(document.getElementById("withdraw-amount").value);
+
+        if (!day || !amount || day < 1) {
+            alert("Inserisci dati validi!");
+            return;
+        }
+
+        let withdrawId = withdrawals.length;
+        withdrawals.push({ id: withdrawId, day, amount });
+
+        updateWithdrawals();
+    }
+
+    function removeWithdrawal(id) {
+        withdrawals = withdrawals.filter(withdraw => withdraw.id !== id);
+        updateWithdrawals();
+    }
+
+    function updateWithdrawals() {
+        let withdrawalList = document.getElementById("withdrawal-list");
+        withdrawalList.innerHTML = "";
+
+        withdrawals.forEach((withdraw, index) => {
+            let listItem = document.createElement("li");
+            listItem.innerHTML = `Day ${withdraw.day}: Withdraw $${withdraw.amount} 
+                <span class="delete-btn" onclick="removeWithdrawal(${withdraw.id})">❌</span>`;
+            withdrawalList.appendChild(listItem);
+        });
+
+        calculateProgression();
+    }
+
+    function calculateProgression() {
+        let startValue = parseFloat(document.getElementById("start").value);
+        let sum = startValue;
+        let totalProfit = 0;
+        let resultsTable = document.getElementById("daily-results");
+        resultsTable.innerHTML = "";
+
+        let days = Array(100).fill(0);
+
+        sequences.forEach(seq => {
+            for (let i = seq.from - 1; i < seq.to; i++) {
+                days[i] = seq.clicks;
+            }
+        });
+
+        days.forEach((ticks, day) => {
+            if (ticks === 0 && !withdrawals.some(w => w.day - 1 === day)) return;
+
+            let dayStart = sum;
+            let dayProfit = 0;
 
             for (let i = 0; i < ticks; i++) {
-                let increment = Math.round((sum * 0.01) * 100) / 100 / 2; // Calcola 1%, arrotonda a due decimali e dividi per 2
+                let increment = Math.round(sum * 0.01 * 0.53 * 100) / 100;
                 sum += increment;
-
-                // Aggiungi un nuovo elemento alla lista con il valore progressivo e l'incremento
-                let li = document.createElement('li');
-                li.textContent = `Tick ${i + 1}: ${sum.toFixed(2)}     ---> Guadagno: ${increment.toFixed(2)}`;
-                progressList.appendChild(li);
+                dayProfit += increment;
             }
-            
-            let profit = sum - start;
-            document.getElementById('final-result').innerText = sum.toFixed(2);  // Valore finale con 2 decimali
-            document.getElementById('profit').innerText = profit.toFixed(2);  // Guadagno con 2 decimali
-        }
-    </script>
+
+            totalProfit += dayProfit;
+
+            withdrawals.forEach(withdraw => {
+                if (withdraw.day - 1 === day) {
+                    let fee = withdraw.amount * 0.1;
+                    let totalWithdraw = withdraw.amount + fee;
+                    sum -= totalWithdraw;
+                    dayProfit -= totalWithdraw;
+                }
+            });
+
+            let row = resultsTable.insertRow();
+            row.innerHTML = `
+                <td>Day ${day + 1}</td>
+                <td>${ticks} Ticks</td>
+                <td>${Math.round(sum * 100) / 100}</td>
+                <td>${Math.round(dayProfit * 100) / 100}</td>
+            `;
+        });
+
+        document.getElementById("final-result").innerText = Math.round(sum * 100) / 100;
+        document.getElementById("profit").innerText = Math.round(totalProfit * 100) / 100;
+    }
+</script>
+
 </body>
 </html>
-
-
-
