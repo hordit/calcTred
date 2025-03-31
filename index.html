@@ -1,118 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Click Progression Calculator</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f7f6; }
-        .container { max-width: 800px; margin: auto; padding: 20px; border: 5px solid #0dd7e9; border-radius: 15px; box-sizing: border-box; background-color: white; }
-        input, button { margin: 10px 0; padding: 10px; width: 100%; max-width: 250px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
-        input:focus, button:focus { outline: none; border-color: #0dd7e9; }
-        
-        /* Styling for buttons */
-        button {
-            background-color: #0dd7e9;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #008cba;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background-color: #f4f7f6;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        border: 5px solid #0dd7e9;
+        border-radius: 15px;
+        box-sizing: border-box;
+        background-color: white;
+      }
+      input,
+      button {
+        margin: 10px 0;
+        padding: 10px;
+        width: 100%;
+        max-width: 250px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+      }
+      input:focus,
+      button:focus {
+        outline: none;
+        border-color: #0dd7e9;
+      }
 
-        /* Delete button style */
-        .delete-btn {
-            color: red;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .delete-btn:hover {
-            color: #b22a2a;
-        }
+      /* Styling for buttons */
+      button {
+        background-color: #0dd7e9;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+      button:hover {
+        background-color: #008cba;
+      }
 
-        /* Container for lists and the result box */
-        .result-box { margin-top: 10px; font-size: 18px; font-weight: bold; color: #7a797e; }
-        .valFinal { color: #2f72b1; }
-        .profit { color: #21d609; }
+      /* Delete button style */
+      .delete-btn {
+        color: red;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 18px;
+        margin-left: 10px; /* Added margin to create space */
+      }
+      .delete-btn:hover {
+        color: #b22a2a;
+      }
 
-        /* Styling for list items */
-        .list-container { text-align: left; margin: auto; width: 100%; padding: 10px; box-sizing: border-box; }
-        .list-container li { margin-bottom: 10px; }
+      /* Container for lists and the result box */
+      .result-box {
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #7a797e;
+      }
+      .valFinal {
+        color: #2f72b1;
+      }
+      .profit {
+        color: #21d609;
+      }
 
-        /* Table styling */
-        table { margin-top: 20px; width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; text-align: center; padding: 10px; }
-        th { background-color: #0dd7e9; color: white; }
+      /* Styling for list items */
+      .list-container {
+        text-align: left;
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+      .list-container li {
+        margin-bottom: 10px;
+      }
 
+      /* Table styling */
+      table {
+        margin-top: 20px;
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        text-align: center;
+        padding: 10px;
+      }
+      th {
+        background-color: #0dd7e9;
+        color: white;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Click Progression Calculator</h2>
 
-<div class="container">
-    <h2>Click Progression Calculator</h2>
+      <label for="start">Starting Value:</label>
+      <input type="number" id="start" value="550" step="0.1" />
 
-    <label for="start">Starting Value:</label>
-    <input type="number" id="start" value="550" step="0.1">
+      <h3>Define Click Sequences</h3>
+      <label>From Day:</label>
+      <input type="number" id="from1" placeholder="Start day" />
+      <label>To Day:</label>
+      <input type="number" id="to1" placeholder="End day" />
+      <label>Clicks per day:</label>
+      <input type="number" id="clicks1" placeholder="Clicks" />
+      <button onclick="addSequence()">Add Sequence</button>
 
-    <h3>Define Click Sequences</h3>
-    <label>From Day:</label>
-    <input type="number" id="from1" placeholder="Start day">
-    <label>To Day:</label>
-    <input type="number" id="to1" placeholder="End day">
-    <label>Clicks per day:</label>
-    <input type="number" id="clicks1" placeholder="Clicks">
-    <button onclick="addSequence()">Add Sequence</button>
+      <h3>Sequences:</h3>
+      <ul id="sequence-list" class="list-container"></ul>
 
-    <h3>Sequences:</h3>
-    <ul id="sequence-list" class="list-container"></ul>
+      <h3>Define Withdrawals</h3>
+      <label>Day:</label>
+      <input type="number" id="withdraw-day" placeholder="Day" />
+      <label>Amount:</label>
+      <input type="number" id="withdraw-amount" placeholder="Amount" />
+      <button onclick="addWithdrawal()">Add Withdrawal</button>
 
-    <h3>Define Withdrawals</h3>
-    <label>Day:</label>
-    <input type="number" id="withdraw-day" placeholder="Day">
-    <label>Amount:</label>
-    <input type="number" id="withdraw-amount" placeholder="Amount">
-    <button onclick="addWithdrawal()">Add Withdrawal</button>
+      <h3>Withdrawals:</h3>
+      <ul id="withdrawal-list" class="list-container"></ul>
 
-    <h3>Withdrawals:</h3>
-    <ul id="withdrawal-list" class="list-container"></ul>
+      <button onclick="calculateProgression()">Calculate</button>
 
-    <button onclick="calculateProgression()">Calculate</button>
-
-    <div class="result-box">
+      <div class="result-box">
         Final Value: <span class="valFinal" id="final-result"></span>
-    </div>
-    <div class="result-box">
+      </div>
+      <div class="result-box">
         Total Profit: <span class="profit" id="profit"></span>
-    </div>
+      </div>
 
-    <table>
+      <table>
         <thead>
-            <tr>
-                <th>Day</th>
-                <th>Ticks</th>
-                <th>Value</th>
-                <th>Profit</th>
-            </tr>
+          <tr>
+            <th>Day</th>
+            <th>Ticks</th>
+            <th>Value</th>
+            <th>Profit</th>
+          </tr>
         </thead>
         <tbody id="daily-results"></tbody>
-    </table>
-</div>
+      </table>
+    </div>
 
-<script>
-    let sequences = [];
-    let withdrawals = [];
+    <script>
+      let sequences = [];
+      let withdrawals = [];
 
-    function addSequence() {
+      function addSequence() {
         let from = parseInt(document.getElementById("from1").value);
         let to = parseInt(document.getElementById("to1").value);
         let clicks = parseInt(document.getElementById("clicks1").value);
 
         if (!from || !to || !clicks || from > to || from < 1) {
-            alert("Inserisci dati validi!");
-            return;
+          alert("Inserisci dati validi!");
+          return;
         }
 
         let sequenceId = sequences.length;
@@ -120,65 +178,67 @@
 
         let sequenceList = document.getElementById("sequence-list");
         let listItem = document.createElement("li");
-        listItem.innerHTML = `Days ${from} to ${to}: ${clicks} clicks 
-            <span class="delete-btn" onclick="removeSequence(${sequenceId})">❌</span>`;
+        listItem.innerHTML = `Days ${from} to ${to}: ${clicks} clicks
+            <span class="delete-btn" onclick="removeSequence(${sequenceId})"> ❌</span>`;
         sequenceList.appendChild(listItem);
-    }
+      }
 
-    function removeSequence(id) {
-        sequences = sequences.filter(sequence => sequence.id !== id);
+      function removeSequence(id) {
+        sequences = sequences.filter((sequence) => sequence.id !== id);
         updateSequences();
-    }
+      }
 
-    function updateSequences() {
+      function updateSequences() {
         let sequenceList = document.getElementById("sequence-list");
         sequenceList.innerHTML = "";
 
-        sequences.forEach(seq => {
-            let listItem = document.createElement("li");
-            listItem.innerHTML = `Days ${seq.from} to ${seq.to}: ${seq.clicks} clicks 
-                <span class="delete-btn" onclick="removeSequence(${seq.id})">❌</span>`;
-            sequenceList.appendChild(listItem);
+        sequences.forEach((seq) => {
+          let listItem = document.createElement("li");
+          listItem.innerHTML = `Days ${seq.from} to ${seq.to}: ${seq.clicks} clicks
+                <span class="delete-btn" onclick="removeSequence(${seq.id})"> ❌</span>`;
+          sequenceList.appendChild(listItem);
         });
 
         calculateProgression();
-    }
+      }
 
-    function addWithdrawal() {
+      function addWithdrawal() {
         let day = parseInt(document.getElementById("withdraw-day").value);
-        let amount = parseFloat(document.getElementById("withdraw-amount").value);
+        let amount = parseFloat(
+          document.getElementById("withdraw-amount").value
+        );
 
         if (!day || !amount || day < 1) {
-            alert("Inserisci dati validi!");
-            return;
+          alert("Inserisci dati validi!");
+          return;
         }
 
         let withdrawId = withdrawals.length;
         withdrawals.push({ id: withdrawId, day, amount });
 
         updateWithdrawals();
-    }
+      }
 
-    function removeWithdrawal(id) {
-        withdrawals = withdrawals.filter(withdraw => withdraw.id !== id);
+      function removeWithdrawal(id) {
+        withdrawals = withdrawals.filter((withdraw) => withdraw.id !== id);
         updateWithdrawals();
-    }
+      }
 
-    function updateWithdrawals() {
+      function updateWithdrawals() {
         let withdrawalList = document.getElementById("withdrawal-list");
         withdrawalList.innerHTML = "";
 
-        withdrawals.forEach((withdraw, index) => {
-            let listItem = document.createElement("li");
-            listItem.innerHTML = `Day ${withdraw.day}: Withdraw $${withdraw.amount} 
-                <span class="delete-btn" onclick="removeWithdrawal(${withdraw.id})">❌</span>`;
-            withdrawalList.appendChild(listItem);
+        withdrawals.forEach((withdraw) => {
+          let listItem = document.createElement("li");
+          listItem.innerHTML = `Day ${withdraw.day}: Withdraw: -${withdraw.amount}
+                <span class="delete-btn" onclick="removeWithdrawal(${withdraw.id})"> ❌</span>`;
+          withdrawalList.appendChild(listItem);
         });
 
         calculateProgression();
-    }
+      }
 
-    function calculateProgression() {
+      function calculateProgression() {
         let startValue = parseFloat(document.getElementById("start").value);
         let sum = startValue;
         let totalProfit = 0;
@@ -187,48 +247,52 @@
 
         let days = Array(100).fill(0);
 
-        sequences.forEach(seq => {
-            for (let i = seq.from - 1; i < seq.to; i++) {
-                days[i] = seq.clicks;
-            }
+        sequences.forEach((seq) => {
+          for (let i = seq.from - 1; i < seq.to; i++) {
+            days[i] = seq.clicks;
+          }
         });
 
         days.forEach((ticks, day) => {
-            if (ticks === 0 && !withdrawals.some(w => w.day - 1 === day)) return;
+          if (ticks === 0 && !withdrawals.some((w) => w.day - 1 === day))
+            return;
 
-            let dayStart = sum;
-            let dayProfit = 0;
+          let dayStart = sum;
+          let dayProfit = 0;
 
-            for (let i = 0; i < ticks; i++) {
-                let increment = Math.round(sum * 0.01 * 0.53 * 100) / 100;
-                sum += increment;
-                dayProfit += increment;
+          for (let i = 0; i < ticks; i++) {
+            let increment = Math.round(sum * 0.01 * 0.53 * 100) / 100;
+            sum += increment;
+            dayProfit += increment;
+          }
+
+          totalProfit += dayProfit;
+
+          withdrawals.forEach((withdraw) => {
+            if (withdraw.day - 1 === day) {
+              let fee = withdraw.amount * 0.1;
+              let totalWithdraw = withdraw.amount + fee;
+              sum -= totalWithdraw;
+              dayProfit -= totalWithdraw;
             }
+          });
 
-            totalProfit += dayProfit;
+          let row = resultsTable.insertRow();
+          let profitCell = dayProfit < 0 ? `<td style="color: red">${Math.round(dayProfit * 100) / 100}</td>` : `<td>${Math.round(dayProfit * 100) / 100}</td>`;
+          let valueCell = sum < 0 ? `<td style="color: red">${Math.round(sum * 100) / 100}</td>` : `<td>${Math.round(sum * 100) / 100}</td>`;
 
-            withdrawals.forEach(withdraw => {
-                if (withdraw.day - 1 === day) {
-                    let fee = withdraw.amount * 0.1;
-                    let totalWithdraw = withdraw.amount + fee;
-                    sum -= totalWithdraw;
-                    dayProfit -= totalWithdraw;
-                }
-            });
-
-            let row = resultsTable.insertRow();
-            row.innerHTML = `
-                <td>Day ${day + 1}</td>
+          row.innerHTML = 
+                `<td>Day ${day + 1}</td>
                 <td>${ticks} Ticks</td>
-                <td>${Math.round(sum * 100) / 100}</td>
-                <td>${Math.round(dayProfit * 100) / 100}</td>
-            `;
+                ${valueCell}
+                ${profitCell}`;
         });
 
-        document.getElementById("final-result").innerText = Math.round(sum * 100) / 100;
-        document.getElementById("profit").innerText = Math.round(totalProfit * 100) / 100;
-    }
-</script>
-
-</body>
+        document.getElementById("final-result").innerText =
+          Math.round(sum * 100) / 100;
+        document.getElementById("profit").innerText =
+          Math.round(totalProfit * 100) / 100;
+      }
+    </script>
+  </body>
 </html>
