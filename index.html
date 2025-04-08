@@ -137,6 +137,16 @@
       <h3>Withdrawals:</h3>
       <ul id="withdrawal-list" class="list-container"></ul>
 
+      <h3>Define Deposits</h3>
+      <label>Deposit Day:</label>
+      <input type="number" id="deposit-day" placeholder="Deposit day" />
+      <label>Deposit Amount:</label>
+      <input type="number" id="deposit-amount" placeholder="Deposit amount" />
+      <button onclick="addDeposit()">Add Deposit</button>
+
+      <h3>Deposits:</h3>
+      <ul id="deposit-list" class="list-container"></ul>
+
       <button onclick="calculateProgression()">Calculate</button>
 
       <div class="result-box">
@@ -162,6 +172,7 @@
     <script>
       let sequences = [];
       let withdrawals = [];
+      let deposits = [];
 
       function addSequence() {
         let from = parseInt(document.getElementById("from1").value);
@@ -238,6 +249,42 @@
         calculateProgression();
       }
 
+      function addDeposit() {
+        let day = parseInt(document.getElementById("deposit-day").value);
+        let amount = parseFloat(
+          document.getElementById("deposit-amount").value
+        );
+
+        if (!day || !amount || day < 1) {
+          alert("Inserisci dati validi!");
+          return;
+        }
+
+        let depositId = deposits.length;
+        deposits.push({ id: depositId, day, amount });
+
+        updateDeposits();
+      }
+
+      function removeDeposit(id) {
+        deposits = deposits.filter((deposit) => deposit.id !== id);
+        updateDeposits();
+      }
+
+      function updateDeposits() {
+        let depositList = document.getElementById("deposit-list");
+        depositList.innerHTML = "";
+
+        deposits.forEach((deposit) => {
+          let listItem = document.createElement("li");
+          listItem.innerHTML = `Day ${deposit.day}: Deposit: +${deposit.amount}
+                <span class="delete-btn" onclick="removeDeposit(${deposit.id})">❌</span>`;
+          depositList.appendChild(listItem);
+        });
+
+        calculateProgression();
+      }
+
       function calculateProgression() {
         let startValue = parseFloat(document.getElementById("start").value);
         let sum = startValue;
@@ -274,6 +321,13 @@
               let totalWithdraw = withdraw.amount + fee;
               sum -= totalWithdraw;
               dayProfit -= totalWithdraw;
+            }
+          });
+
+          deposits.forEach((deposit) => {
+            if (deposit.day - 1 === day) {
+              sum += deposit.amount;
+              dayProfit += deposit.amount;
             }
           });
 
